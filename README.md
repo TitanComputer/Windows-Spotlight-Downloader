@@ -33,7 +33,9 @@ Python 3.8+
 Standard libraries only (os, json, datetime, etc.)
 
 If you're modifying and running the script directly and use additional packages (like requests or beautifulsoup4), install them via:
+```bash
 pip install -r requirements.txt
+```
 
 ## 📁 Project Structure
 
