@@ -48,6 +48,12 @@ windows-spotlight-downloader/
 │   └── Portrait/               # Portrait-oriented images
 └── README.md                   # Project documentation
 ```
+## ❓ What is Windows Spotlight?
+
+Windows Spotlight is a feature in Windows 10 and 11 that automatically displays beautiful, high-resolution images on the lock screen.  
+These images are curated by Microsoft and often feature landscapes, architecture, and other stunning visuals.  
+
+However, the images are not directly accessible or downloadable through the standard Windows interface — this tool helps you fetch and save them locally in an organized way.
 
 ## 🌐 Source of Images and Legal Notice
 This tool downloads images from windows10spotlight.com, a third-party archive of Windows Spotlight wallpapers.
