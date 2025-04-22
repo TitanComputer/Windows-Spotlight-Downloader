@@ -39,12 +39,19 @@ pip install -r requirements.txt
 
 windows-spotlight-downloader/
 │
+
 ├── Windows-Spotlight-Downloader.py     # Main script
+
 ├── state.json                  # Auto-generated to track previously downloaded images
+
 ├── Windows-Spotlight-Downloader.exe    # Compiled executable (optional)
+
 ├── downloads/
+
 │   ├── Landscape/              # Landscape-oriented images
+
 │   └── Portrait/               # Portrait-oriented images
+
 └── README.md                   # Project documentation
 
 ## 🌐 Source of Images and Legal Notice
