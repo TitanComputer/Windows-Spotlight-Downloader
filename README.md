@@ -21,9 +21,9 @@ No need to install Python — just download and run.
 ## ⚙️ Usage
 
 If you're using the Python script:
-
-> python Windows-Spotlight-Downloader.py
-
+```bash
+python Windows-Spotlight-Downloader.py
+```
 Or, run the .exe file directly if you downloaded the compiled version.
 You can customize download paths and scraping logic in Windows-Spotlight-Downloader.py if you're running from source.
 
@@ -37,22 +37,17 @@ pip install -r requirements.txt
 
 ## 📁 Project Structure
 
+```bash
 windows-spotlight-downloader/
 │
-
 ├── Windows-Spotlight-Downloader.py     # Main script
-
 ├── state.json                  # Auto-generated to track previously downloaded images
-
 ├── Windows-Spotlight-Downloader.exe    # Compiled executable (optional)
-
 ├── downloads/
-
 │   ├── Landscape/              # Landscape-oriented images
-
 │   └── Portrait/               # Portrait-oriented images
-
 └── README.md                   # Project documentation
+```
 
 ## 🌐 Source of Images and Legal Notice
 This tool downloads images from windows10spotlight.com, a third-party archive of Windows Spotlight wallpapers.
@@ -73,6 +68,7 @@ If you have suggestions for improvements or new features, feel free to open an i
 If you find this project useful and would like to support its development, consider donating:
 ## 💰 USDT (Tether) – TRC20 Wallet Address:
 
-> TGoKk5zD3BMSGbmzHnD19m9YLpH5ZP8nQe
-
+```bash
+TGoKk5zD3BMSGbmzHnD19m9YLpH5ZP8nQe
+```
 Thanks a lot for your support! 🙏
