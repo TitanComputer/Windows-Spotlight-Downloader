@@ -67,6 +67,7 @@ def main():
     state = load_state()
     if state.get("full_run_done") == None:
         state["full_run_done"] = False
+        state["last_post_date"] = '2000-01-01'
         save_state(state)
     while True:
         URLGrabber(url)
@@ -96,6 +97,7 @@ def main():
                         if request.status_code == 200:
                             HTMLParser(request)
                             ImageLink = soup.find("div", class_="entry").find_all('a')
+                            PostDate = soup.find("span", class_="date").text
                             for imglink in ImageLink:
                                 if imglink == ImageLink[-1]:
                                     Type = 'Portrait'
@@ -118,6 +120,11 @@ def main():
                 if url == None:
                     print('That was last page.')
                     state["full_run_done"] = True
+                    state["last_post_date"] = RecentPostDate
+                    save_state(state)
+                    break
+                if PostDate < state["last_post_date"] and state["full_run_done"] == True:
+                    print('All of New Images Has Been Downloaded')
                     state["last_post_date"] = RecentPostDate
                     save_state(state)
                     break
