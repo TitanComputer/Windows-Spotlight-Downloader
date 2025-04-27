@@ -88,23 +88,23 @@ def main():
                     url = None
                     pass
                 PostURL = []
-                ImageURL = []
                 for link in PostsLinks:
                     PostURL.append(link.get('href'))
-                for Post in PostURL:
+                while len(PostURL) > 0:
+                    Post = PostURL[0]
                     URLGrabber(Post)
                     if TestStatus == True:
                         if request.status_code == 200:
                             HTMLParser(request)
                             ImageLink = soup.find("div", class_="entry").find_all('a')
                             PostDate = soup.find("span", class_="date").text
-                            for imglink in ImageLink:
-                                if imglink == ImageLink[-1]:
+                            isPortrait = True
+                            while len(ImageLink) > 0:
+                                if isPortrait:
                                     Type = 'Portrait'
                                 else:
                                     Type = 'Landscape'
-                                ImageURL.append(imglink.get('href'))
-                                ContentURL = imglink.get('href')
+                                ContentURL = ImageLink[-1].get('href')
                                 Extension = ContentURL.rsplit('.',1)[-1]
                                 if Extension.lower() == 'jpg' or Extension.lower() == 'png' or Extension.lower() == 'bmp' or Extension.lower() == 'tiff' or Extension.lower() == 'webp':
                                     Path = 'Download\\%s\\%s-%s.%s' % (Type , PageTitle , Type , Extension)
@@ -114,9 +114,20 @@ def main():
                                                 if request.status_code == 200:
                                                     Content = request.content
                                                     FileSaver(Content,Path)
+                                        else:
+                                            print('Trying Again After 30 Seconds...')
+                                            sleep(30)
+                                            continue
                                     else:
                                         print('File already exists:' , Path)
+                                ImageLink.pop(-1)
+                                isPortrait = False
                                 #sleep(1)
+                            PostURL.pop(0)
+                    else:
+                        print('Trying Again After 30 Seconds...')
+                        sleep(30)
+                        continue
                 if url == None:
                     print('That was last page.')
                     state["full_run_done"] = True
