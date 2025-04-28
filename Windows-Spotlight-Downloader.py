@@ -5,8 +5,6 @@ from datetime import datetime
 from bs4 import BeautifulSoup as BS
 
 STATE_FILE = "state.json"
-start_time = datetime.now()
-print("The program started at " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 FirstRun = True
 Counter = 0
 url = 'https://windows10spotlight.com'
@@ -69,6 +67,20 @@ def main():
         state["full_run_done"] = False
         state["last_post_date"] = '2000-01-01'
         save_state(state)
+
+    user_input = input("Enter 'L' for Download Only Landscape, 'P' for Download Only Portrait, or press Enter for Download Both: ").strip()
+    if user_input.lower() == 'l':
+        mode = "Landscape"
+        print("Landscape mode selected.")
+    elif user_input.lower() == 'p':
+        mode = "Portrait"
+        print("Portrait mode selected.")
+    else:
+        mode = "Default"
+        print("Default mode selected. Both of Landscape and Portrait will be downloaded")
+
+    start_time = datetime.now()
+    print("The program started at " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     while True:
         URLGrabber(url)
         if TestStatus == True:
@@ -108,18 +120,34 @@ def main():
                                 Extension = ContentURL.rsplit('.',1)[-1]
                                 if Extension.lower() == 'jpg' or Extension.lower() == 'png' or Extension.lower() == 'bmp' or Extension.lower() == 'tiff' or Extension.lower() == 'webp':
                                     Path = 'Download\\%s\\%s-%s.%s' % (Type , PageTitle , Type , Extension)
-                                    if not(os.path.isfile(Path) and os.access(Path, os.R_OK) and os.stat(Path).st_size > 10240):
-                                        URLGrabber(ContentURL)
-                                        if TestStatus == True:
-                                                if request.status_code == 200:
-                                                    Content = request.content
-                                                    FileSaver(Content,Path)
+                                    if (mode == "Landscape" and Type == 'Landscape') or mode == "Default":
+                                        if not(os.path.isfile(Path) and os.access(Path, os.R_OK) and os.stat(Path).st_size > 10240):
+                                            URLGrabber(ContentURL)
+                                            if TestStatus == True:
+                                                    if request.status_code == 200:
+                                                        Content = request.content
+                                                        FileSaver(Content,Path)
+                                            else:
+                                                print('Trying Again After 30 Seconds...')
+                                                sleep(30)
+                                                continue
                                         else:
-                                            print('Trying Again After 30 Seconds...')
-                                            sleep(30)
-                                            continue
+                                            print('File already exists:' , Path)
+                                    elif (mode == "Portrait" and Type == 'Portrait') or mode == "Default":
+                                        if not(os.path.isfile(Path) and os.access(Path, os.R_OK) and os.stat(Path).st_size > 10240):
+                                            URLGrabber(ContentURL)
+                                            if TestStatus == True:
+                                                    if request.status_code == 200:
+                                                        Content = request.content
+                                                        FileSaver(Content,Path)
+                                            else:
+                                                print('Trying Again After 30 Seconds...')
+                                                sleep(30)
+                                                continue
+                                        else:
+                                            print('File already exists:' , Path)
                                     else:
-                                        print('File already exists:' , Path)
+                                        pass
                                 ImageLink.pop(-1)
                                 isPortrait = False
                                 #sleep(1)
