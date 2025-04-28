@@ -8,10 +8,12 @@ It scrapes the current Spotlight images and stores them locally, avoiding duplic
 ## 🚀 Features
 
 - Downloads high-quality Windows Spotlight wallpapers
-- Separates and saves images into `Landscape` and `Portrait` folders
+- Separates and saves images into Landscape and Portrait folders
+- Allows users to select download mode (Landscape only / Portrait only / Both)
+- Robust internet error handling — retries failed pages instead of skipping
 - Avoids re-downloading previously saved images
 - Stores execution state in a local JSON file
-- Simple and fast — no bloat
+- Simple, lightweight, and fast — no bloat
 
 ## 📥 Download
 
@@ -25,7 +27,20 @@ If you're using the Python script:
 python Windows-Spotlight-Downloader.py
 ```
 Or, run the .exe file directly if you downloaded the compiled version.
-You can customize download paths and scraping logic in Windows-Spotlight-Downloader.py if you're running from source.
+
+When you start the program, you will be prompted to choose which images to download:
+
+Enter `L` and press Enter → Download only **Landscape** wallpapers
+
+Enter `P` and press Enter → Download only **Portrait** wallpapers
+
+Enter anything else and press Enter → Download **both** Landscape and Portrait wallpapers
+
+The program will then begin downloading images based on your selection.
+
+If a network error occurs, it will retry the page until all images are successfully downloaded.
+
+Tip: You can customize download paths and scraping logic by editing Windows-Spotlight-Downloader.py if you are running from the source code.
 
 ## 📦 Dependencies
 Python 3.8+
