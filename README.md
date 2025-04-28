@@ -15,7 +15,7 @@ It scrapes the current Spotlight images and stores them locally, avoiding duplic
 
 ## 📥 Download
 
-You can download the latest compiled `.exe` version from the [Releases](https://github.com/TitanComputer/windows-spotlight-downloader/releases) section.  
+You can download the latest compiled `.exe` version from the [Releases](https://github.com/TitanComputer/windows-spotlight-downloader/releases/latest) section.  
 No need to install Python — just download and run.
 
 ## ⚙️ Usage
