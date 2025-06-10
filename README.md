@@ -5,6 +5,10 @@ It scrapes the current Spotlight images and stores them locally, avoiding duplic
 
 > This project has been compiled into an executable (`.exe`) using **auto-py-to-exe** for easy distribution on Windows systems.
 
+> **Looking for the GUI version?**  
+> 👉 [Check out the GUI repository here](https://github.com/TitanComputer/Windows-Spotlight-Downloader-GUI)
+
+
 ## 🚀 Features
 
 - Downloads high-quality Windows Spotlight wallpapers
