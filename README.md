@@ -93,6 +93,9 @@ If you have suggestions for improvements or new features, feel free to open an i
 
 ## ☕ Support
 If you find this project useful and would like to support its development, consider donating:
+
+<a href="http://www.coffeete.ir/Titan"><img width="500" height="140" alt="buymeacoffee" src="https://github.com/user-attachments/assets/8ddccb3e-2afc-4fd9-a782-89464ec7dead" /></a>
+
 ## 💰 USDT (Tether) – TRC20 Wallet Address:
 
 ```bash
