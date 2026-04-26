@@ -1,22 +1,46 @@
 import traceback
-import requests, os , re , json
+import requests, os, re, json
 from time import sleep
 from datetime import datetime
 from bs4 import BeautifulSoup as BS
 
+# ================Constants================
+APP_VERSION = "1.4.0"
+APP_NAME = "Windows Spotlight Downloader"
+# =========================================
+# --- Colors ---
+COLOR_RESET = "\033[0m"
+COLOR_CYAN = "\033[96m"
+COLOR_GREEN = "\033[92m"
+COLOR_RED = "\033[91m"
+COLOR_YELLOW = "\033[93m"
+COLOR_BOLD = "\033[1m"
+
 STATE_FILE = "state.json"
 FirstRun = True
 Counter = 0
-url = 'https://windows10spotlight.com'
-proxies = {'http': 'socks5://192.168.1.3:1080','https': 'socks5://192.168.1.3:1080'}
+url = "https://windows10spotlight.com"
+proxies = {"http": "socks5://192.168.1.3:1080", "https": "socks5://192.168.1.3:1080"}
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.5',
-    'Referer': 'https://google.com',
-    'Connection': 'keep-alive'
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
+    "Referer": "https://google.com",
+    "Connection": "keep-alive",
 }
 timeout = 5
+
+
+def print_banner():
+    os.system("")
+    banner = f"""
+    {COLOR_CYAN}{COLOR_BOLD}============================================={COLOR_RESET}
+    {COLOR_GREEN}{COLOR_BOLD}         {APP_NAME} {COLOR_RESET}
+    {COLOR_YELLOW}              Version: {APP_VERSION} {COLOR_RESET}
+    {COLOR_CYAN}{COLOR_BOLD}============================================={COLOR_RESET}
+    """
+    print(banner)
+
 
 def load_state():
     if os.path.exists(STATE_FILE):
@@ -24,55 +48,65 @@ def load_state():
             return json.load(f)
     return {}
 
+
 def save_state(state):
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, indent=4)
 
+
 def URLGrabber(url):
     try:
-        global request , TestStatus
+        global request, TestStatus
         TestStatus = True
-        request = requests.get(url, headers=headers , timeout=timeout)
-        return request , TestStatus
+        request = requests.get(url, headers=headers, timeout=timeout)
+        return request, TestStatus
     except:
         TestStatus = False
         print("Network Error. Please Check Your Connection And Try Again...")
         return TestStatus
 
-def FileSaver(content,path):
+
+def FileSaver(content, path):
     try:
-        os.makedirs('Download\\%s' % Type)
+        os.makedirs("Download\\%s" % Type)
     except:
         pass
     try:
         global Counter
-        with open(path , "wb") as file:
+        with open(path, "wb") as file:
             file.write(content)
             Counter += 1
             print("%i File(s) Saved" % Counter)
     except:
         print("File is locked or inaccessible.")
 
+
 def HTMLParser(data):
-    global soup , PageTitle
+    global soup, PageTitle
     data = request.text
-    soup = BS(data,"html.parser")
-    PageTitle = re.sub("[^A-Za-z0-9]"," ",str(soup.find("h1").text).strip()).strip().replace('   ',' ').replace('  ',' ')
-    return soup , PageTitle
+    soup = BS(data, "html.parser")
+    PageTitle = (
+        re.sub("[^A-Za-z0-9]", " ", str(soup.find("h1").text).strip()).strip().replace("   ", " ").replace("  ", " ")
+    )
+    return soup, PageTitle
+
 
 def main():
-    global Type , url , FirstRun , state
+    global Type, url, FirstRun, state
+    print_banner()
     state = load_state()
     if state.get("full_run_done") == None:
         state["full_run_done"] = False
-        state["last_post_date"] = '2000-01-01'
+        state["last_post_date"] = "2000-01-01"
         save_state(state)
 
-    user_input = input("Enter 'L' for Download Only Landscape, 'P' for Download Only Portrait, or press Enter for Download Both: ").strip()
-    if user_input.lower() == 'l':
+    user_input = input(
+        "Enter 'L' for Download Only Landscape, 'P' for Download Only Portrait, or press Enter for Download Both: "
+    ).strip()
+    if user_input.lower() == "l":
         mode = "Landscape"
         print("Landscape mode selected.")
-    elif user_input.lower() == 'p':
+    elif user_input.lower() == "p":
         mode = "Portrait"
         print("Portrait mode selected.")
     else:
@@ -80,95 +114,114 @@ def main():
         print("Default mode selected. Both of Landscape and Portrait will be downloaded")
 
     start_time = datetime.now()
-    print("The program started at " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("The program started at " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     while True:
         URLGrabber(url)
         if TestStatus == True:
             if request.status_code == 200:
                 HTMLParser(request)
                 if FirstRun == True:
-                    LastPageNumber = str(soup.find("div", class_="nav-links").find('span' , class_='page-numbers dots').find_next('a' , class_='page-numbers').text).replace(',','')
+                    LastPageNumber = str(
+                        soup.find("div", class_="nav-links")
+                        .find("span", class_="page-numbers dots")
+                        .find_next("a", class_="page-numbers")
+                        .text
+                    ).replace(",", "")
                     RecentPostDate = soup.find("span", class_="date").text
                     FirstRun = False
-                CurrentPageNumber = str(soup.find("span", class_="page-numbers current").text).replace(',','')
-                print('Page %s of %s ' % (CurrentPageNumber , LastPageNumber))
+                CurrentPageNumber = str(soup.find("span", class_="page-numbers current").text).replace(",", "")
+                print("Page %s of %s " % (CurrentPageNumber, LastPageNumber))
                 PostsLinks = soup.find_all("a", class_="anons-thumbnail show")
                 try:
-                    NextPage = soup.find("a", class_="next page-numbers").get('href')
+                    NextPage = soup.find("a", class_="next page-numbers").get("href")
                     url = NextPage
                 except:
                     url = None
                     pass
                 PostURL = []
                 for link in PostsLinks:
-                    PostURL.append(link.get('href'))
+                    PostURL.append(link.get("href"))
                 while len(PostURL) > 0:
                     Post = PostURL[0]
                     URLGrabber(Post)
                     if TestStatus == True:
                         if request.status_code == 200:
                             HTMLParser(request)
-                            ImageLink = soup.find("div", class_="entry").find_all('a')
+                            ImageLink = soup.find("div", class_="entry").find_all("a")
                             PostDate = soup.find("span", class_="date").text
                             isPortrait = True
                             while len(ImageLink) > 0:
                                 if isPortrait:
-                                    Type = 'Portrait'
+                                    Type = "Portrait"
                                 else:
-                                    Type = 'Landscape'
-                                ContentURL = ImageLink[-1].get('href')
-                                Extension = ContentURL.rsplit('.',1)[-1]
-                                if Extension.lower() == 'jpg' or Extension.lower() == 'png' or Extension.lower() == 'bmp' or Extension.lower() == 'tiff' or Extension.lower() == 'webp':
-                                    Path = 'Download\\%s\\%s-%s.%s' % (Type , PageTitle , Type , Extension)
-                                    if (mode == "Landscape" and Type == 'Landscape') or mode == "Default":
-                                        if not(os.path.isfile(Path) and os.access(Path, os.R_OK) and os.stat(Path).st_size > 10240):
+                                    Type = "Landscape"
+                                ContentURL = ImageLink[-1].get("href")
+                                Extension = ContentURL.rsplit(".", 1)[-1]
+                                if (
+                                    Extension.lower() == "jpg"
+                                    or Extension.lower() == "png"
+                                    or Extension.lower() == "bmp"
+                                    or Extension.lower() == "tiff"
+                                    or Extension.lower() == "webp"
+                                ):
+                                    Path = "Download\\%s\\%s-%s.%s" % (Type, PageTitle, Type, Extension)
+                                    if (mode == "Landscape" and Type == "Landscape") or mode == "Default":
+                                        if not (
+                                            os.path.isfile(Path)
+                                            and os.access(Path, os.R_OK)
+                                            and os.stat(Path).st_size > 10240
+                                        ):
                                             URLGrabber(ContentURL)
                                             if TestStatus == True:
-                                                    if request.status_code == 200:
-                                                        Content = request.content
-                                                        FileSaver(Content,Path)
+                                                if request.status_code == 200:
+                                                    Content = request.content
+                                                    FileSaver(Content, Path)
                                             else:
-                                                print('Trying Again After 30 Seconds...')
+                                                print("Trying Again After 30 Seconds...")
                                                 sleep(30)
                                                 continue
                                         else:
-                                            print('File already exists:' , Path)
-                                    elif (mode == "Portrait" and Type == 'Portrait') or mode == "Default":
-                                        if not(os.path.isfile(Path) and os.access(Path, os.R_OK) and os.stat(Path).st_size > 10240):
+                                            print("File already exists:", Path)
+                                    elif (mode == "Portrait" and Type == "Portrait") or mode == "Default":
+                                        if not (
+                                            os.path.isfile(Path)
+                                            and os.access(Path, os.R_OK)
+                                            and os.stat(Path).st_size > 10240
+                                        ):
                                             URLGrabber(ContentURL)
                                             if TestStatus == True:
-                                                    if request.status_code == 200:
-                                                        Content = request.content
-                                                        FileSaver(Content,Path)
+                                                if request.status_code == 200:
+                                                    Content = request.content
+                                                    FileSaver(Content, Path)
                                             else:
-                                                print('Trying Again After 30 Seconds...')
+                                                print("Trying Again After 30 Seconds...")
                                                 sleep(30)
                                                 continue
                                         else:
-                                            print('File already exists:' , Path)
+                                            print("File already exists:", Path)
                                     else:
                                         pass
                                 ImageLink.pop(-1)
                                 isPortrait = False
-                                #sleep(1)
+                                # sleep(1)
                             PostURL.pop(0)
                     else:
-                        print('Trying Again After 30 Seconds...')
+                        print("Trying Again After 30 Seconds...")
                         sleep(30)
                         continue
                 if url == None:
-                    print('That was last page.')
+                    print("That was last page.")
                     state["full_run_done"] = True
                     state["last_post_date"] = RecentPostDate
                     save_state(state)
                     break
                 if PostDate < state["last_post_date"] and state["full_run_done"] == True:
-                    print('All of New Images Has Been Downloaded')
+                    print("All of New Images Has Been Downloaded")
                     state["last_post_date"] = RecentPostDate
                     save_state(state)
                     break
         else:
-            print('Trying Again After 30 Seconds...')
+            print("Trying Again After 30 Seconds...")
             sleep(30)
             continue
     end_time = datetime.now()
@@ -177,9 +230,10 @@ def main():
     hours = total_seconds // 3600
     minutes = (total_seconds % 3600) // 60
     seconds = total_seconds % 60
-    print("The program ended at " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    print("The program ended at " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print(f"The program ran in {hours} hour(s), {minutes} minute(s), and {seconds} second(s).")
     pass
+
 
 try:
     main()
