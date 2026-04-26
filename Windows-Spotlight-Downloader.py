@@ -5,7 +5,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup as BS
 
 # ================Constants================
-APP_VERSION = "1.4.0"
+APP_VERSION = "1.5.0"
 APP_NAME = "Windows Spotlight Downloader"
 # =========================================
 # --- Colors ---
@@ -85,9 +85,15 @@ def HTMLParser(data):
     global soup, PageTitle
     data = request.text
     soup = BS(data, "html.parser")
-    PageTitle = (
-        re.sub("[^A-Za-z0-9]", " ", str(soup.find("h1").text).strip()).strip().replace("   ", " ").replace("  ", " ")
-    )
+    try:
+        PageTitle = (
+            re.sub("[^A-Za-z0-9]", " ", str(soup.find("h1").text).strip())
+            .strip()
+            .replace("   ", " ")
+            .replace("  ", " ")
+        )
+    except:
+        PageTitle = "Unknown"
     return soup, PageTitle
 
 
